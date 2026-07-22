@@ -24,3 +24,9 @@ screenshots/
 # OS
 .DS_Store
 Thumbs.db
+
+testdata/loginData.json
+testdata/LoginData.xlsx
+config/qa.ini
+config/uat.ini
+config/dev.ini
