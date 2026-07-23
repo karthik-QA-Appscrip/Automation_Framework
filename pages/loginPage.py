@@ -14,7 +14,7 @@ class LoginPage(BasePage):
         self.enter_text(LoginLocators.PASSWORD, password)
 
     def click_login(self):
-        self.click(LoginLocators.LOGIN_BUTTON)
+        self.js_click(LoginLocators.LOGIN_BUTTON)
 
     def login(self, username, password):
         self.click_continue_with_password()
