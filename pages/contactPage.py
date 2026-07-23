@@ -117,13 +117,14 @@ class ContactPage(BasePage):
         return self.get_and_verify__popup()
 
     def refresh_page(self):
-        element = self.wait.wait_for_clickable(ContactsLocators.REFRESH_BUTTON)
+        # Directly find and click the button without pre-validation checks to avoid staleness race conditions
+        element = self.driver.find_element(*ContactsLocators.REFRESH_BUTTON)
         element.click()
         
-        # Give a brief pause or wait for the grid rows to re-appear after refresh
+        # Pause briefly for the network/grid to re-render
         time.sleep(2) 
         
-        # If the grid rows are visible again, the refresh was successful
-        grid_element = self.wait.wait_for_visibility(ContactsLocators.CONTACT_TABLE_ROWS) # Adjust locator to match your table rows if needed
+        # Safely wait for the table rows to reappear using your wait helper
+        self.wait.wait_for_visibility(ContactsLocators.CONTACT_TABLE_ROWS)
+        
         return True
-
