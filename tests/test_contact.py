@@ -11,6 +11,7 @@ from constants import messages
 from utilities.BaseTest import BaseTest
 from utilities.TestDataManager import TestData
 from utilities.assertionHelper import AssertionHelper
+from utilities.waitHelper import WaitUtils
 
 
 class TestContact(BaseTest):
@@ -20,17 +21,18 @@ class TestContact(BaseTest):
     contact_email = ""
 
     def login_and_navigate(self, driver):
-        """Helper method to log in and open contacts page so we don't repeat this code 3 times."""
         login = LoginPage(driver)
         contact_page = ContactPage(driver)
         test_data = TestData()
+        wait_utils = WaitUtils(driver) # Initialize your wait utility
 
-        # Login
+        current_url = driver.current_url
         login.login(test_data.valid_username, test_data.valid_password)
-        WebDriverWait(driver, 30).until(lambda d: "/login" not in d.current_url)
+        
+        # Use your custom utility instead of a raw lambda!
+        wait_utils.wait_for_url_to_change(current_url)
         time.sleep(3) 
 
-        # Navigate
         contact_page.click_work_space()
         contact_page.click_contacts_tab()
         

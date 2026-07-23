@@ -35,3 +35,7 @@ class WaitUtils:
     def wait_for_text_in_element(self, locator, text):
         """Waits until a specific element contains the expected text."""
         return self.wait.until(EC.text_to_be_present_in_element(locator, text))
+
+    def wait_for_url_to_change(self, old_url):
+        """Waits until the browser URL changes from the given old URL."""
+        return self.wait.until(EC.url_changes(old_url))
