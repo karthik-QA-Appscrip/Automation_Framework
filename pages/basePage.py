@@ -1,6 +1,7 @@
 from selenium.webdriver.support.ui import Select
 from utilities.waitHelper import WaitUtils
 from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.keys import Keys
 
 
 class BasePage:
@@ -33,7 +34,9 @@ class BasePage:
             return self.wait.wait_for_visibility(locator).is_enabled()
 
         def clear(self, locator):
-            self.find_element(locator).clear()
+            element = self.find_element(locator)
+            element.send_keys(Keys.CONTROL + "a")
+            element.send_keys(Keys.BACKSPACE)
 
         def scroll_to_element(self, locator):
             element = self.find_element(locator)

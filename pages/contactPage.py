@@ -62,54 +62,56 @@ class ContactPage(BasePage):
         self.wait.wait_for_visibility(ContactsLocators.SAVE_BUTTON)
         self.click(ContactsLocators.SAVE_BUTTON)
 
+    def get_and_verify__popup(self):
+        self.wait.wait_for_visibility(ContactsLocators.POP_UP)
+        return self.get_text(ContactsLocators.POP_UP)
+
+    def wait_for_popup_to_clear(self):
+        """Dynamically waits for the success toast to appear, then fade away."""
+        self.wait.wait_for_visibility(ContactsLocators.POP_UP)
+        self.wait.wait_for_invisibility(ContactsLocators.POP_UP)
+
     def create_contact(self, first_name, email):
         self.click_add_contact_button()
         self.first_name(first_name)
         self.email(email)
         self.click_save_button()
 
-    def get_and_verify__popup(self):
-        self.wait.wait_for_visibility(ContactsLocators.POP_UP)
-        return self.get_text(ContactsLocators.POP_UP)
 
-    def verify_contact(self, first_name, email_address):
-        import time
-        
-        # ADDED: Force a page data refresh by clicking the Contacts tab again before searching
+    def edit_contact(self, edit_name):
+        self.wait.wait_for_visibility(ContactsLocators.EDIT_CONTACT)
+        self.click(ContactsLocators.EDIT_CONTACT)
+        self.clear(ContactsLocators.FIRST_NAME)
+        self.enter_text(ContactsLocators.FIRST_NAME, edit_name) # BasePage handles clearing
+        self.click_save_button()
+       
+
+    def verify_contact(self, value):
         self.click_contacts_tab()
-        time.sleep(3)
+        self.wait.wait_for_visibility(ContactsLocators.SEARCH_FIELD)
         
-        self.search_field(first_name)
+        self.search_field(value)
         
-        # Wait for the web app to filter the search results in the DOM
-        time.sleep(3) 
+        # Wait dynamically for the grid to filter instead of time.sleep(3)
+        from selenium.webdriver.common.by import By
+        self.wait.wait_for_text_in_element((By.XPATH, "//tbody/tr[1]"), value)
         
         self.click_view_button()
-        
-        # Wait for the profile page slide-out/navigation animation to finish
-        time.sleep(2)
+        self.wait.wait_for_visibility(ContactsLocators.VERIFY_NAME) # Wait for profile to open
         
         name = self.get_verify_name()
         email = self.get_verify_email()
-        
-
         return name, email
 
-    
     def delete_contact_in_search_field(self):
-        # 1. Click the Contacts tab to force close any open overlays or slide-outs
         self.click_contacts_tab()
         
-        # Give the UI a moment to clear the overlay animation
-        time.sleep(2) 
-
-        # 2. Click the trash icon in the grid
+        # No overlay! Just wait for the delete button to be ready to click
         self.wait.wait_for_visibility(ContactsLocators.SEARCH_FIELD_DELETE_BUTTON)
         self.click(ContactsLocators.SEARCH_FIELD_DELETE_BUTTON)
 
-        # 3. Confirm the deletion in the popup modal
         self.wait.wait_for_visibility(ContactsLocators.CONFIRM_DELETE)
         self.click(ContactsLocators.CONFIRM_DELETE)
-        time.sleep(2)
 
         return self.get_and_verify__popup()
+    

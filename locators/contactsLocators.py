@@ -5,19 +5,24 @@ from selenium.webdriver.common.by import By
 class ContactsLocators:
 
     WORK_SPACE = (
-        By.XPATH, "//button[@aria-label='Toggle Workspace menu']//div[@class='flex items-center space-x-3']")
+        By.XPATH, "//button[@aria-label='Toggle Workspace menu']//div[@class='flex items-center space-x-3']"
+    )
 
     CONTACTS_TAB = (
-        By.XPATH, "//a//span[.='Contacts']")
+        By.XPATH, "//a//span[.='Contacts']"
+    )
 
     ADD_CONTACT_BUTTON = (
-        By.XPATH, "//button[normalize-space()='Add Contact']")
+        By.XPATH, "//button[normalize-space()='Add Contact']"
+    )
 
     FIRST_NAME = (
-        By.XPATH, "//label[contains(.,'First name')]//following::input[@name='firstName']")
+        By.XPATH, "//label[contains(.,'First name')]//following::input[@name='firstName']"
+    )
 
     EMAIL = (
-        By.XPATH, "//h3[contains(normalize-space(),'Email')]//following::input[@type='email']")
+        By.XPATH, "//h3[contains(normalize-space(),'Email')]//following::input[@type='email']"
+    )
 
     ADMINISTRATION = (
         By.XPATH, "//button[@aria-label='Toggle Administration menu']"
@@ -58,4 +63,9 @@ class ContactsLocators:
     SEARCH_FIELD_DELETE_BUTTON = (
         By.XPATH, "//tbody/tr[1]//button[contains(@aria-label, 'Delete') or contains(@title, 'Delete')]"
     )
-    
+
+    EDIT_CONTACT = (
+        By.XPATH, "//tbody/tr[1]//button[contains(@aria-label, 'Edit') or contains(@title, 'Edit')]"
+    )
+
+        

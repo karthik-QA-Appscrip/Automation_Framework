@@ -73,8 +73,7 @@ class TestContact(BaseTest):
 
         # The verify_contact method handles the search and the extraction
         actual_name, actual_email = contact_page.verify_contact(
-            TestContact.contact_first_name,
-            TestContact.contact_email
+            TestContact.contact_first_name
         )
 
         self.logger.info(
@@ -95,7 +94,7 @@ class TestContact(BaseTest):
 
 
     @allure.description("Delete the contact to clean up the database")
-    @allure.title("CONTACT_003 - Delete Contact")
+    @allure.title("CONTACT_004 - Delete Contact")
     @pytest.mark.smoke
     def test_03_delete_contact(self, driver):
         self.logger.info("--- Starting Test 3: Delete Contact ---")
@@ -115,3 +114,72 @@ class TestContact(BaseTest):
         AssertionHelper.verify_contains(expected_word, result, "Checking if success message contains 'Delete'")
         
         self.logger.info("Successfully deleted contact. Cleanup complete.")
+
+
+    @allure.description("Create a contact, edit its name, and verify the changes")
+    @allure.title("CONTACT_004 - Edit Contact")
+    @pytest.mark.smoke
+    def test_04_edit_contact(self, driver):
+        self.logger.info("--- Starting Test 4: Edit Contact ---")
+        
+        fake = Faker()
+        initial_name = fake.first_name()
+        contact_email = fake.email()
+        updated_name = f"{initial_name}_Edited"
+        
+        contact_page = self.login_and_navigate(driver)
+        
+        # 1. Create (Allow DB time to process because there is no success popup)
+        self.logger.info(f"Creating initial contact: {initial_name}")
+        contact_page.create_contact(initial_name, contact_email)
+        time.sleep(5) 
+        
+        # 2. Search & Verify Original
+        contact_page.search_field(initial_name)
+        
+        # 3. Edit (Allow DB time to process the updated name)
+        self.logger.info(f"Editing contact name to: {updated_name}")
+        contact_page.edit_contact(updated_name)
+        time.sleep(5) 
+        
+        # 4. Verify Updated Data (Method automatically waits for grid to filter)
+        actual_name, actual_email = contact_page.verify_contact(updated_name)
+        
+        AssertionHelper.verify_equal(updated_name, actual_name, "Verify updated name matches")
+        AssertionHelper.verify_equal(contact_email, actual_email, "Verify email remained the same")
+        self.logger.info("Successfully verified edited contact details.")
+        
+        # 5. Clean up
+        contact_page.delete_contact_in_search_field()
+        self.logger.info("Cleanup complete.")
+
+    @allure.description("Search and verify a contact using their email address")
+    @allure.title("CONTACT_005 - Search By Email")
+    @pytest.mark.smoke
+    def test_05_search_by_email(self, driver):
+        self.logger.info("--- Starting Test 5: Search By email ---")
+
+        # 1. Generate local test data
+        fake = Faker()
+        contact_name = fake.first_name()
+        contact_email = fake.email()
+
+        contact_page = self.login_and_navigate(driver)
+
+        # 2. Create the contact
+        self.logger.info(f"Creating contact -> Name: {contact_name} | Email: {contact_email}")
+        contact_page.create_contact(contact_name, contact_email)
+
+        # 3. Verify Contact (Searching by Email)
+        # FIX: Only pass the email once to match your Page Object!
+        actual_name, actual_email = contact_page.verify_contact(contact_email)
+        
+        # 4. Assert against the LOCAL variable
+        AssertionHelper.verify_equal(contact_email, actual_email, "Email mismatch")
+        AssertionHelper.verify_equal(contact_name, actual_name, "Name mismatch")
+        
+        self.logger.info("Successfully verified contact details by searching with email.")
+
+        # 5. Clean up the database
+        contact_page.delete_contact_in_search_field()
+        self.logger.info("Cleanup complete.")
