@@ -39,3 +39,7 @@ class WaitUtils:
     def wait_for_url_to_change(self, old_url):
         """Waits until the browser URL changes from the given old URL."""
         return self.wait.until(EC.url_changes(old_url))
+
+    def wait_for_page_refresh(self, element):
+        """Waits until an element becomes stale (indicating a page refresh or DOM re-render)."""
+        return self.wait.until(EC.staleness_of(element))

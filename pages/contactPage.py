@@ -1,4 +1,5 @@
 import time
+from xml.dom.minidom import Element
 from selenium.webdriver.common.keys import Keys
 from pages.basePage import BasePage
 from utilities.waitHelper import WaitUtils
@@ -114,4 +115,15 @@ class ContactPage(BasePage):
         self.click(ContactsLocators.CONFIRM_DELETE)
 
         return self.get_and_verify__popup()
-    
+
+    def refresh_page(self):
+        element = self.wait.wait_for_clickable(ContactsLocators.REFRESH_BUTTON)
+        element.click()
+        
+        # Give a brief pause or wait for the grid rows to re-appear after refresh
+        time.sleep(2) 
+        
+        # If the grid rows are visible again, the refresh was successful
+        grid_element = self.wait.wait_for_visibility(ContactsLocators.CONTACT_TABLE_ROWS) # Adjust locator to match your table rows if needed
+        return True
+

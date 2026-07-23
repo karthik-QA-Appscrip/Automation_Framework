@@ -68,4 +68,12 @@ class ContactsLocators:
         By.XPATH, "//tbody/tr[1]//button[contains(@aria-label, 'Edit') or contains(@title, 'Edit')]"
     )
 
+    REFRESH_BUTTON = (
+        By.XPATH, "//button[normalize-space()='Refresh']"
+    )
+
+    CONTACT_TABLE_ROWS = (
+        By.XPATH, "//tbody[@class='[&_tr:last-child]:border-0']"
+    )
+
         

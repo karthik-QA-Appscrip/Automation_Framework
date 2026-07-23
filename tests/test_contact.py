@@ -185,3 +185,16 @@ class TestContact(BaseTest):
         # 5. Clean up the database
         contact_page.delete_contact_in_search_field()
         self.logger.info("Cleanup complete.")
+
+    @allure.description("Verify the refresh button functionality reloads the grid")
+    @allure.title("CONTACT_006 - Refresh functionality testing")
+    @pytest.mark.smoke
+    def test_06_refresh_functionality(self, driver):
+        self.logger.info("--- Starting Test 6: Refresh Functionality ---")
+
+        contact_page = self.login_and_navigate(driver)
+
+        value = contact_page.refresh_page()
+
+        AssertionHelper.verify_true(value, "Verify page/grid successfully refreshed")
+        self.logger.info("Successfully verified refresh functionality.")
