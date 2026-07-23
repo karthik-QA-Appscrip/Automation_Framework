@@ -24,6 +24,8 @@ class TestLogin(BaseTest):
 
         self.logger.info(f"Username : {TestData.valid_username}")
         self.logger.info(messages.ENTER_VALID_PASSWORD)
+        print(TestData.valid_username)
+        print(TestData.valid_password)
 
         # login.login(valid_username, valid_password)
         login.login(

@@ -18,4 +18,5 @@ class TestData:
 
     invalid_email_cases = login_data["invalidEmails"]
 
-    
+    contact_first_name = login_data["contact"]["first_name"]
+    contact_email = login_data["contact"]["email"]

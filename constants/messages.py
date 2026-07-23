@@ -31,3 +31,10 @@ POPUP_NOT_DISPLAYED_AFTER_VALID_LOGIN = "Popup was not displayed after valid log
 POPUP_NOT_DISPLAYED_AFTER_INVALID_LOGIN = "Popup was not displayed after invalid login."
 POPUP_NOT_DISPLAYED_AFTER_INVALID_PASSWORD = "Popup was not displayed after invalid password."
 POPUP_NOT_DISPLAYED_AFTER_INVALID_USERNAME = "Popup was not displayed after invalid username."
+
+# =========================
+# Contact Messages
+# =========================
+
+CONTACT_NAME_NOT_MATCHED = "Contact name does not match."
+CONTACT_EMAIL_NOT_MATCHED = "Contact email does not match."
