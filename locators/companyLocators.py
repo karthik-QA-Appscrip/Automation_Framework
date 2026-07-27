@@ -10,4 +10,48 @@ class CompanyLocators:
         By.XPATH, "//a//span[.='Companies']"
     )
 
+    ADD_COPANY = (
+        By.XPATH, "//button[normalize-space()='Add Company']"
+    )
+
+    COMPNAY_NAME = (
+        By.XPATH, "//label[contains(., 'Name')]//following::input[1]"
+    )
+
+    EMAIL_ID = (
+        By.XPATH, "//input[@type='email']"
+    )
+
+    SAVE_BUTTON = (
+        By.XPATH, "//button[normalize-space()='Save company']"
+    )
+
+    BEFROE_COUNT = (
+        By.XPATH, "//tbody/tr"
+    )
+
+    AFTER_COUNT = (
+        By.XPATH, "//tbody/tr"
+    )
+
+    COMPANY_NAME_VIEW = (
+        By.XPATH, "//h2[contains(@class, 'font-bold')]"
+    )
+
+    CONFIRM_DELETE = (
+        By.XPATH, "//button[normalize-space()='Delete']"
+    )
+
+    EDIT_COMPANY_NAME = (
+        By.XPATH, "//input[@name='name']"
+    )
+
+    POP_UP = (
+        By.XPATH, "//section[@aria-label='Notifications alt+T']"
+    )
+
+    POP_UP = (
+        By.XPATH, "//section[@aria-label='Notifications alt+T']"
+    )
+
     
