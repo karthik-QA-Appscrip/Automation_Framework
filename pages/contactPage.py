@@ -4,6 +4,7 @@ from selenium.webdriver.common.keys import Keys
 from pages.basePage import BasePage
 from utilities.waitHelper import WaitUtils
 from locators.contactsLocators import ContactsLocators
+from selenium.common.exceptions import StaleElementReferenceException
 
 
 class ContactPage(BasePage):
@@ -118,13 +119,27 @@ class ContactPage(BasePage):
 
     def refresh_page(self):
         # Directly find and click the button without pre-validation checks to avoid staleness race conditions
-        element = self.driver.find_element(*ContactsLocators.REFRESH_BUTTON)
-        element.click()
+        # element = self.driver.find_element(*ContactsLocators.REFRESH_BUTTON)
+        # element.click()
         
-        # Pause briefly for the network/grid to re-render
-        time.sleep(2) 
+        # # Pause briefly for the network/grid to re-render
+        # time.sleep(2) 
         
-        # Safely wait for the table rows to reappear using your wait helper
-        self.wait.wait_for_visibility(ContactsLocators.CONTACT_TABLE_ROWS)
+        # # Safely wait for the table rows to reappear using your wait helper
+        # self.wait.wait_for_visibility(ContactsLocators.CONTACT_TABLE_ROWS)
         
+        # return True
+
+        for i in range(3):
+            try:
+                self.click(ContactsLocators.REFRESH_BUTTON)
+                break
+            except StaleElementReferenceException:
+                if i == 2:
+                    raise
+
+        self.wait.wait_for_visibility(
+            ContactsLocators.CONTACT_TABLE_ROWS
+        )
+
         return True
