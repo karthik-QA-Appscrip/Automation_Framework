@@ -76,4 +76,23 @@ class ContactsLocators:
         By.XPATH, "//tbody[@class='[&_tr:last-child]:border-0']"
     )
 
-        
+    ERROR_MSG = (
+        By.XPATH, "//p[@class='text-sm text-destructive']"
+    )
+
+    BEFROE_COUNT = (
+            By.XPATH, "//tbody/tr"
+        )
+    
+    AFTER_COUNT = (
+            By.XPATH, "//tbody/tr"
+        )
+
+    CONTACT_COUNT = (
+        By.XPATH,
+        "//a[contains(@href,'/workspace/contacts')]//p[contains(@class,'text-3xl')]"
+    )
+
+    DASHBOARD = (
+        By.XPATH , "//span[normalize-space()='Dashboard']"
+    )

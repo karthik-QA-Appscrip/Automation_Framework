@@ -198,3 +198,278 @@ class TestContact(BaseTest):
 
         AssertionHelper.verify_true(value, "Verify page/grid successfully refreshed")
         self.logger.info("Successfully verified refresh functionality.")
+
+
+
+    @allure.description("Create contact with blank First Name")
+    @allure.title("CONTACT_007 - Create Contact with Blank First Name")
+    @pytest.mark.smoke
+    def test_07_create_contact_with_blank_first_name(self, driver):
+        self.logger.info("--- Starting Test 7: Create contact with blank First Name ---")
+
+        fake = Faker()
+        contact_name = ""
+        contact_email = fake.email()
+
+        self.logger.info(f"Test Data -> First Name: '{contact_name}', Email: {contact_email}")
+
+        contact_page = self.login_and_navigate(driver)
+
+        self.logger.info("Attempting to create contact with blank First Name.")
+
+        actual_result = contact_page.create_invalid_contact(contact_name, contact_email)
+
+        self.logger.info(f"Actual Validation Message : {actual_result}")
+
+        expected_result = "First name is required"
+
+        self.logger.info(f"Expected Validation Message : {expected_result}")
+
+        AssertionHelper.verify_contains(expected_result, actual_result)
+
+        self.logger.info("Successfully verified validation message for blank First Name.")
+
+
+
+    @allure.description("Create contact with blank Email")
+    @allure.title("CONTACT_008 - Create Contact with Blank Email")
+    @pytest.mark.smoke
+    def test_08_create_contact_with_blank_email(self, driver):
+        self.logger.info("--- Starting Test 8: Create contact with blank Email ---")
+
+        fake = Faker()
+        contact_name = fake.first_name()
+        contact_email = ""
+
+        self.logger.info(f"Test Data -> First Name: {contact_name}, Email: '{contact_email}'")
+
+        contact_page = self.login_and_navigate(driver)
+
+        self.logger.info("Attempting to create contact with blank Email.")
+
+        actual_result = contact_page.create_invalid_contact(contact_name, contact_email)
+
+        self.logger.info(f"Actual Validation Message : {actual_result}")
+
+        expected_result = "Email is required"
+
+        self.logger.info(f"Expected Validation Message : {expected_result}")
+
+        AssertionHelper.verify_contains(expected_result, actual_result)
+
+        self.logger.info("Successfully verified validation message for blank Email.")
+
+
+    @allure.description("Create contact with invalid Email")
+    @allure.title("CONTACT_009 - Create Contact with Invalid Email")
+    @pytest.mark.smoke
+    def test_09_create_contact_with_invalid_email(self, driver):
+        self.logger.info("--- Starting Test 9: Create contact with invalid Email ---")
+
+        fake = Faker()
+        contact_name = fake.first_name()
+        contact_email = "invalidemail"   # Invalid email format
+
+        self.logger.info(f"Test Data -> First Name: {contact_name}, Email: {contact_email}")
+
+        contact_page = self.login_and_navigate(driver)
+
+        self.logger.info("Attempting to create contact with an invalid Email.")
+
+        actual_result = contact_page.create_invalid_contact(contact_name, contact_email)
+
+        self.logger.info(f"Actual Validation Message : {actual_result}")
+
+        expected_result = "Please enter a valid email address"
+
+        self.logger.info(f"Expected Validation Message : {expected_result}")
+
+        AssertionHelper.verify_contains(expected_result, actual_result)
+
+        self.logger.info("Successfully verified validation message for invalid Email.")
+
+
+
+    @allure.description("Create contact with duplicate Email")
+    @allure.title("CONTACT_010 - Create Contact with Duplicate Email")
+    @pytest.mark.smoke
+    def test_10_create_contact_with_duplicate_email(self, driver):
+
+        self.logger.info("--- Starting Test 10: Create Contact with Duplicate Email ---")
+
+        fake = Faker()
+        contact_name = fake.first_name()
+        contact_email = fake.email()
+
+        self.logger.info(
+            f"Generated Test Data -> Name: {contact_name}, Email: {contact_email}"
+        )
+
+        contact_page = self.login_and_navigate(driver)
+
+        # Create contact
+        self.logger.info("Creating contact for the first time.")
+        contact_page.create_contact(contact_name, contact_email)
+
+        # Verify contact was created
+        actual_name, actual_email = contact_page.verify_contact(contact_name)
+
+
+        self.logger.info(f"Expected Name  : {contact_name}")
+        self.logger.info(f"Actual Name    : {actual_name}")
+        self.logger.info(f"Expected Email : {contact_email}")
+        self.logger.info(f"Actual Email   : {actual_email}")
+
+        AssertionHelper.verify_equal(contact_name, actual_name)
+        AssertionHelper.verify_equal(contact_email, actual_email)
+
+        self.logger.info("Contact created successfully.")
+
+        # Try creating another contact with same email
+        self.logger.info("Creating another contact with the same email.")
+
+        contact_page.create_contact(fake.first_name(), contact_email)
+
+        actual_popup = contact_page.get_pop_up_text()
+        expected_popup = "A user with this email already exists in our system"
+
+        self.logger.info(f"Expected Popup : {expected_popup}")
+        self.logger.info(f"Actual Popup   : {actual_popup}")
+
+        AssertionHelper.verify_contains(expected_popup, actual_popup)
+
+        self.logger.info("Duplicate email validation verified successfully.")
+
+
+    @allure.description("Search contact by partial name")
+    @allure.title("CONTACT_011 - Search Contact by Partial Name")
+    @pytest.mark.smoke
+    def test_11_search_contact_by_partial_name(self, driver):
+
+        self.logger.info("--- Starting Test 11: Search Contact by Partial Name ---")
+
+        fake = Faker()
+        contact_name = fake.first_name()      # Example: Matthew
+        contact_email = fake.email()
+
+        self.logger.info(
+            f"Generated Test Data -> Name: {contact_name}, Email: {contact_email}"
+        )
+
+        contact_page = self.login_and_navigate(driver)
+
+        # Create Contact
+        self.logger.info("Creating contact.")
+        contact_page.create_contact(contact_name, contact_email)
+
+        # Verify contact creation
+        actual_name, actual_email = contact_page.verify_contact(contact_name)
+
+        AssertionHelper.verify_equal(contact_name, actual_name)
+        AssertionHelper.verify_equal(contact_email, actual_email)
+
+        self.logger.info("Contact created successfully.")
+
+        # Search using partial name
+        partial_name = contact_name[:4]   # Example: "Matt"
+
+        self.logger.info(f"Searching with partial name: {partial_name}")
+
+        actual_name, actual_email = contact_page.verify_contact(partial_name)
+
+        self.logger.info(f"Expected Name  : {contact_name}")
+        self.logger.info(f"Actual Name    : {actual_name}")
+
+        AssertionHelper.verify_contains(contact_name, actual_name)
+
+        self.logger.info("Partial name search verified successfully.")
+
+
+    @allure.description("Verify contact count increases after creating a new contact")
+    @allure.title("CONTACT_012 - Verify Contact Count After Creation")
+    @pytest.mark.smoke
+    def test_12_count_contacts_after_creation(self, driver):
+
+        self.logger.info("--- Starting Test 12: Verify Contact Count After Creation ---")
+
+        fake = Faker()
+        contact_name = fake.first_name()
+        contact_email = fake.email()
+
+        self.logger.info(
+            f"Generated Test Data -> Name: {contact_name}, Email: {contact_email}"
+        )
+
+        contact_page = self.login_and_navigate(driver)
+
+        # Get count before creation
+        before_count = contact_page.get_contact_count()
+
+        self.logger.info(f"Before Count : {before_count}")
+
+        # Create contact
+        contact_page.create_contact(contact_name, contact_email)
+
+        # Verify contact
+        actual_name, actual_email = contact_page.verify_contact(contact_name)
+
+        AssertionHelper.verify_equal(contact_name, actual_name)
+        AssertionHelper.verify_equal(contact_email, actual_email)
+
+        # Go to Dashboard again
+        after_count = contact_page.get_contact_count()
+
+        self.logger.info(f"After Count : {before_count}")
+
+        AssertionHelper.verify_equal(before_count + 1, after_count)
+
+
+    @allure.description("Verify contact count decrements after deleting a contact")
+    @allure.title("CONTACT_013 - Verify Contact Count After Deletion")
+    @pytest.mark.smoke
+    def test_13_count_contacts_after_deletion(self, driver):
+
+        self.logger.info("--- Starting Test 13 ---")
+
+        fake = Faker()
+        contact_name = fake.first_name()
+        contact_email = fake.email()
+
+        contact_page = self.login_and_navigate(driver)
+
+        # Count before creation
+        before_count = contact_page.get_contact_count()
+        self.logger.info(f"Before Count : {before_count}")
+
+        # Create contact
+        contact_page.create_contact(contact_name, contact_email)
+
+        # Verify contact
+        actual_name, actual_email = contact_page.verify_contact(contact_name)
+
+        AssertionHelper.verify_equal(contact_name, actual_name)
+        AssertionHelper.verify_equal(contact_email, actual_email)
+
+        # Count after creation
+        count_after_creation = contact_page.get_contact_count()
+        self.logger.info(f"Count After Creation : {count_after_creation}")
+
+        AssertionHelper.verify_equal(before_count + 1, count_after_creation)
+
+        # Search contact
+        contact_page.search_field(contact_name)
+
+        # Delete contact
+        popup = contact_page.delete_contact_in_search_field()
+
+        AssertionHelper.verify_contains("Contact deleted", popup)
+
+        contact_page.wait_for_popup_to_clear()
+
+        # Count after deletion
+        after_count = contact_page.get_contact_count()
+        self.logger.info(f"After Count : {after_count}")
+
+        AssertionHelper.verify_equal(count_after_creation - 1, after_count)
+
+        self.logger.info("Contact count decremented successfully.")

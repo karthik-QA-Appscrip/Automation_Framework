@@ -6,6 +6,7 @@ from pages.basePage import BasePage
 from utilities.waitHelper import WaitUtils
 from locators.companyLocators import CompanyLocators
 from selenium.webdriver.common.by import By
+from selenium.common.exceptions import StaleElementReferenceException
 
 
 class CompanyPage(BasePage):
@@ -45,7 +46,7 @@ class CompanyPage(BasePage):
         self.click(locator)
 
     def get_company_name(self, company_name):
-        locator = (
+        locator = ( 
             By.XPATH,
             f"//*[self::td or self::div or self::span or self::a][normalize-space()='{company_name}']"
         )
@@ -115,8 +116,23 @@ class CompanyPage(BasePage):
         print("Edited to:", new_name)
 
     def get_popup_text(self):
-         self.wait.wait_for_visibility(CompanyLocators.POP_UP)
-         return self.get_text(CompanyLocators.POP_UP)
+        self.wait.wait_for_visibility(CompanyLocators.POP_UP)
+        return self.get_text(CompanyLocators.POP_UP)
+
+    def refresh_functionality(self):
+        for i in range(3):
+            try:
+                self.click(CompanyLocators.REFRESH_BUTTON)
+                break
+            except StaleElementReferenceException:
+                if i == 2:
+                    raise
+        
+        self.wait.wait_for_visibility(
+            CompanyLocators.CONTACT_TABLE_ROWS
+        )
+        
+        return True
 
     
     

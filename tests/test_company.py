@@ -158,4 +158,17 @@ class TestCompany(BaseTest):
 
         self.logger.info("Successfully edited company.")
 
+    @allure.description("Verify the refresh button functionality reloads the company grid")
+    @allure.title("COMPANY_006 - Refresh functionality testing")
+    @pytest.mark.smoke
+    def test_06_refresh_functionality(self, driver):
+        self.logger.info("--- Starting Test 6: Refresh Functionality ---")
+
+        company_page = self.login_and_navigate(driver)
+
+        value = company_page.refresh_functionality()
+
+        AssertionHelper.verify_true(value, "Verify company grid successfully refreshed")
+        self.logger.info("Successfully verified refresh functionality.")
+
     

@@ -103,6 +103,8 @@ class ContactPage(BasePage):
         
         name = self.get_verify_name()
         email = self.get_verify_email()
+
+        self.click(ContactsLocators.CONTACTS_TAB)
         return name, email
 
     def delete_contact_in_search_field(self):
@@ -118,17 +120,6 @@ class ContactPage(BasePage):
         return self.get_and_verify__popup()
 
     def refresh_page(self):
-        # Directly find and click the button without pre-validation checks to avoid staleness race conditions
-        # element = self.driver.find_element(*ContactsLocators.REFRESH_BUTTON)
-        # element.click()
-        
-        # # Pause briefly for the network/grid to re-render
-        # time.sleep(2) 
-        
-        # # Safely wait for the table rows to reappear using your wait helper
-        # self.wait.wait_for_visibility(ContactsLocators.CONTACT_TABLE_ROWS)
-        
-        # return True
 
         for i in range(3):
             try:
@@ -143,3 +134,56 @@ class ContactPage(BasePage):
         )
 
         return True
+
+    def get_pop_up_text(self):
+        self.wait.wait_for_visibility(ContactsLocators.POP_UP)
+        self.find_element(ContactsLocators.POP_UP)
+        
+        return self.get_text(ContactsLocators.POP_UP)
+
+    
+
+    def create_invalid_contact(self,first_name,email):
+        self.click_add_contact_button()
+        self.first_name(first_name)
+        self.email(email)
+        self.click_save_button()
+
+        return self.get_pop_up_text()
+
+    def before_count_contact(self):
+        self.wait.wait_for_visibility(ContactsLocators.BEFROE_COUNT)
+        rows = self.find_all(ContactsLocators.BEFROE_COUNT)
+        # count_no = len(rows)
+
+        # return count_no  
+        print("Total Rows:", len(rows))
+
+        for i, row in enumerate(rows):
+            print(i, row.text)
+
+        return len(rows)
+
+    def after_count_contact(self):
+        self.wait.wait_for_visibility(ContactsLocators.BEFROE_COUNT)
+
+        rows = self.find_all(ContactsLocators.BEFROE_COUNT)
+
+        print("After count:", len(rows))
+
+        for i, row in enumerate(rows):
+            print(i, row.is_displayed())
+
+        return len(rows)
+
+    def get_contact_count(self):
+        self.click(ContactsLocators.DASHBOARD)
+        self.click(ContactsLocators.REFRESH_BUTTON)
+        time.sleep(2)
+        self.wait.wait_for_visibility(ContactsLocators.CONTACT_COUNT)
+
+        count = self.get_text(ContactsLocators.CONTACT_COUNT)
+
+        self.click(ContactsLocators.CONTACT_COUNT)
+
+        return int(count)

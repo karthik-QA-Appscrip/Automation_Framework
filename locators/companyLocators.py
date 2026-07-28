@@ -50,8 +50,13 @@ class CompanyLocators:
         By.XPATH, "//section[@aria-label='Notifications alt+T']"
     )
 
-    POP_UP = (
-        By.XPATH, "//section[@aria-label='Notifications alt+T']"
+    REFRESH_BUTTON = (
+        By.XPATH, "//button[normalize-space()='Refresh']"
     )
+
+    CONTACT_TABLE_ROWS = (
+            By.XPATH, "//tbody[@class='[&_tr:last-child]:border-0']"
+        )
+    
 
     
