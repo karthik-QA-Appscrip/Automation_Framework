@@ -19,13 +19,13 @@ class TestCompany(BaseTest):
     company_name = ""
     company_email = ""
 
-    def login_and_navigate(self, driver):
-        login = LoginPage(driver)
-        company_page = CompanyPage(driver)
+    def login_and_navigate(self):
+        login = LoginPage()
+        company_page = CompanyPage()
         test_data = TestData()
-        wait_utils = WaitUtils(driver)
+        wait_utils = login.wait
 
-        current_url = driver.current_url
+        current_url = login.driver.current_url
         login.login(test_data.valid_username, test_data.valid_password)
 
         wait_utils.wait_for_url_to_change(current_url)
@@ -39,7 +39,7 @@ class TestCompany(BaseTest):
     @allure.description("Create a new company")
     @allure.title("COMPANY_001 - Create Company")
     @pytest.mark.smoke
-    def test_01_create_company(self, driver):
+    def test_01_create_company(self):
         self.logger.info("--- Starting Test 1: Create Company ---")
 
         fake = Faker()
@@ -49,7 +49,7 @@ class TestCompany(BaseTest):
             f"Generated Data -> Name: {TestCompany.company_name} | Email: {TestCompany.company_email}"
         )
 
-        company_page = self.login_and_navigate(driver)
+        company_page = self.login_and_navigate()
         company_page.create_company(TestCompany.company_name, TestCompany.company_email)
         time.sleep(5)
 
@@ -58,13 +58,13 @@ class TestCompany(BaseTest):
     @allure.description("Verify the created company")
     @allure.title("COMPANY_002 - Verify Company")
     @pytest.mark.smoke
-    def test_02_verify_company(self, driver):
+    def test_02_verify_company(self):
         self.logger.info("--- Starting Test 2: Verify Company ---")
 
         if not TestCompany.company_name:
             pytest.skip("Skipping: No company was created in Test 1.")
 
-        company_page = self.login_and_navigate(driver)
+        company_page = self.login_and_navigate()
 
         company_page.click_view_company(TestCompany.company_name)
         actual_name = company_page.view_company_and_get_name(TestCompany.company_name)
@@ -81,13 +81,13 @@ class TestCompany(BaseTest):
     @allure.description("Delete the created company")
     @allure.title("COMPANY_003 - Delete Company")
     @pytest.mark.smoke
-    def test_03_delete_company(self, driver):
+    def test_03_delete_company(self):
         self.logger.info("--- Starting Test 3: Delete Company ---")
 
         if not TestCompany.company_name:
             pytest.skip("Skipping: No company exists to delete.")
 
-        company_page = self.login_and_navigate(driver)
+        company_page = self.login_and_navigate()
 
         company_page.delete_company(TestCompany.company_name)
 
@@ -102,7 +102,7 @@ class TestCompany(BaseTest):
     @allure.description("Create and verify a second company")
     @allure.title("COMPANY_004 - Create and Verify Another Company")
     @pytest.mark.smoke
-    def test_04_create_and_verify_another_company(self, driver):
+    def test_04_create_and_verify_another_company(self):
         self.logger.info("--- Starting Test 4: Create and Verify Another Company ---")
 
         fake = Faker()
@@ -112,7 +112,7 @@ class TestCompany(BaseTest):
             f"Generated Data -> Name: {TestCompany.company_name} | Email: {TestCompany.company_email}"
         )
 
-        company_page = self.login_and_navigate(driver)
+        company_page = self.login_and_navigate()
         company_page.create_company(TestCompany.company_name, TestCompany.company_email)
         time.sleep(5)
 
@@ -130,11 +130,11 @@ class TestCompany(BaseTest):
     @allure.description("Edit the created company")
     @allure.title("COMPANY_005 - Edit Company")
     @pytest.mark.smoke
-    def test_05_edit_company(self, driver):
+    def test_05_edit_company(self):
         self.logger.info("--- Starting Test 5: Edit Company ---")
 
 
-        company_page = self.login_and_navigate(driver)
+        company_page = self.login_and_navigate()
 
         fake = Faker()
         TestCompany.company_name = fake.company()
@@ -161,10 +161,10 @@ class TestCompany(BaseTest):
     @allure.description("Verify the refresh button functionality reloads the company grid")
     @allure.title("COMPANY_006 - Refresh functionality testing")
     @pytest.mark.smoke
-    def test_06_refresh_functionality(self, driver):
+    def test_06_refresh_functionality(self):
         self.logger.info("--- Starting Test 6: Refresh Functionality ---")
 
-        company_page = self.login_and_navigate(driver)
+        company_page = self.login_and_navigate()
 
         value = company_page.refresh_functionality()
 

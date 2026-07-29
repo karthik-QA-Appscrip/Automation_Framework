@@ -2,13 +2,14 @@ from selenium.webdriver.support.ui import Select
 from utilities.waitHelper import WaitUtils
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.keys import Keys
+from utilities.driver_manager import DriverManager
 
 
 class BasePage:
 
-        def __init__(self, driver):
-            self.driver = driver
-            self.wait = WaitUtils(driver)
+        def __init__(self):
+            self.driver = DriverManager.get_driver()
+            self.wait = WaitUtils(self.driver)
 
         def find_element(self, locator):
             return self.wait.wait_for_visibility(locator)

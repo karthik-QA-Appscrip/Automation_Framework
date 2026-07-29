@@ -4,6 +4,9 @@ from locators.loginLocators import LoginLocators
 
 class LoginPage(BasePage):
 
+    def __init__(self):
+        super().__init__()
+
     def click_continue_with_password(self):
         self.click(LoginLocators.CONTINUE_WITH_PASSWORD)
 

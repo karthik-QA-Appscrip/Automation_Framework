@@ -1,7 +1,5 @@
 import time
 from tkinter import S
-from xml.dom.minidom import Element
-from selenium.webdriver.common.keys import Keys
 from pages.basePage import BasePage
 from utilities.waitHelper import WaitUtils
 from locators.companyLocators import CompanyLocators
@@ -11,9 +9,9 @@ from selenium.common.exceptions import StaleElementReferenceException
 
 class CompanyPage(BasePage):
 
-    def __init__(self, driver):
-        super().__init__(driver)
-        self.wait = WaitUtils(driver)
+    def __init__(self):
+        super().__init__()
+
 
     def click_work_space(self):
             self.wait.wait_for_visibility(CompanyLocators.WORK_SPACE)

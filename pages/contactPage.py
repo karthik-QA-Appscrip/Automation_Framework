@@ -5,13 +5,13 @@ from pages.basePage import BasePage
 from utilities.waitHelper import WaitUtils
 from locators.contactsLocators import ContactsLocators
 from selenium.common.exceptions import StaleElementReferenceException
+from utilities.driver_manager import DriverManager
 
 
 class ContactPage(BasePage):
 
-    def __init__(self, driver):
-        super().__init__(driver)
-        self.wait = WaitUtils(driver)
+    def __init__(self):
+        super().__init__()
 
     def click_work_space(self):
         self.wait.wait_for_visibility(ContactsLocators.WORK_SPACE)

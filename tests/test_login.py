@@ -2,8 +2,6 @@ import allure
 import pytest
 
 from pages.loginPage import LoginPage
-from utilities.configReader import ConfigReader
-from utilities.jsonReader import JsonReader
 from constants import messages
 from utilities.BaseTest import BaseTest
 from utilities.TestDataManager import TestData
@@ -18,9 +16,9 @@ class TestLogin(BaseTest):
     @allure.story("Login Functionality")
     @pytest.mark.smoke
     @allure.title("LOGIN_001 - Verify login with valid credentials")
-    def test_login_valid_credentials(self, driver): 
+    def test_login_valid_credentials(self): 
 
-        login = LoginPage(driver)
+        login = LoginPage()
 
         self.logger.info(f"Username : {TestData.valid_username}")
         self.logger.info(messages.ENTER_VALID_PASSWORD)
@@ -42,9 +40,9 @@ class TestLogin(BaseTest):
 
     @allure.story("Invalid Login")
     @allure.title("LOGIN_002 - Verify login with invalid username")
-    def test_login_invalid_credentials(self, driver):
+    def test_login_invalid_credentials(self):
 
-        login = LoginPage(driver)
+        login = LoginPage()
 
         # login.login(invalid_username, valid_password)
         login.login(
@@ -64,9 +62,9 @@ class TestLogin(BaseTest):
 
     @allure.story("Invalid Login")
     @allure.title("LOGIN_003 - Verify login with invalid password")
-    def test_login_invalid_password(self, driver):
+    def test_login_invalid_password(self):
 
-        login = LoginPage(driver)
+        login = LoginPage()
 
         login.login(TestData.valid_username, TestData.invalid_password)
 
@@ -79,9 +77,9 @@ class TestLogin(BaseTest):
 
     @allure.story("Invalid Login")
     @allure.title("LOGIN_004 - Verify login with blank credentials")
-    def test_login_blank_credentials(self, driver):
+    def test_login_blank_credentials(self):
 
-        login = LoginPage(driver)
+        login = LoginPage()
 
         self.logger.info(messages.ENTER_BLANK_USERNAME_PASSWORD)
 
@@ -93,9 +91,9 @@ class TestLogin(BaseTest):
 
     @allure.story("Invalid Login")
     @allure.title("LOGIN_005 - Verify login with valid username and blank password")
-    def test_login_blank_password(self, driver):
+    def test_login_blank_password(self):
 
-        login = LoginPage(driver)
+        login = LoginPage()
 
         self.logger.info(messages.ENTER_VALID_USERNAME_BLANK_PASSWORD)
 
@@ -108,9 +106,9 @@ class TestLogin(BaseTest):
 
     @allure.story("Invalid Login")
     @allure.title("LOGIN_006 - Verify login with blank username and valid password")
-    def test_login_blank_username(self, driver):
+    def test_login_blank_username(self):
 
-        login = LoginPage(driver)
+        login = LoginPage()
 
         self.logger.info(messages.ENTER_BLANK_USERNAME_VALID_PASSWORD)
 
@@ -122,9 +120,9 @@ class TestLogin(BaseTest):
 
     @allure.story("Invalid Login")
     @allure.title("LOGIN_007 - Verify login with invalid username")
-    def test_login_invalid_username(self, driver):
+    def test_login_invalid_username(self):
 
-        login = LoginPage(driver)
+        login = LoginPage()
 
         login.login(
             TestData.invalid_username,
@@ -147,9 +145,9 @@ class TestLogin(BaseTest):
     @allure.story("Email Validation")
     @allure.title("LOGIN_008 - Verify login with invalid email format")
     @pytest.mark.parametrize("test_data", TestData.invalid_email_cases)
-    def test_login_invalid_email_format(self, driver, test_data):
+    def test_login_invalid_email_format(self, test_data):
 
-        login = LoginPage(driver)
+        login = LoginPage()
 
         login.click_continue_with_password()
 

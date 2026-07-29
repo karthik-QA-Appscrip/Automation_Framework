@@ -1,5 +1,6 @@
 import pytest
 from selenium import webdriver
+from utilities.driver_manager import DriverManager
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.edge.service import Service as EdgeService
 from selenium.webdriver.firefox.service import Service as FirefoxService
@@ -28,8 +29,12 @@ def pytest_addoption(parser):
     )
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="function", autouse=True)
 def driver(request):
+
+    print("Fixture Started")
+
+
     config = ConfigReader()
 
     browser = request.config.getoption("--browser")
@@ -39,10 +44,12 @@ def driver(request):
 
     headless = request.config.getoption("--headless")
 
-    driver = DriverFactory.get_driver(
-        browser=browser,
-        headless=headless
-    )
+    DriverFactory.get_driver(
+    browser=browser,
+    headless=headless
+)
+
+    driver = DriverManager.get_driver()
 
     driver.maximize_window()
     driver.implicitly_wait(config.get_timeout())
@@ -50,4 +57,4 @@ def driver(request):
 
     yield driver
 
-    driver.quit()
+    DriverManager.quit_driver()

@@ -1,4 +1,5 @@
 from selenium import webdriver
+from utilities.driver_manager import DriverManager
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.edge.service import Service as EdgeService
 from selenium.webdriver.firefox.service import Service as FirefoxService
@@ -22,12 +23,16 @@ class DriverFactory:
             if headless:
                 options.add_argument("--headless=new")
 
-            return webdriver.Chrome(
+            driver = webdriver.Chrome(
                 service=ChromeService(
                     ChromeDriverManager().install()
                 ),
                 options=options
             )
+
+            DriverManager.set_driver(driver)
+
+            return DriverManager.get_driver()
 
         elif browser == "edge":
 
@@ -36,12 +41,16 @@ class DriverFactory:
             if headless:
                 options.add_argument("--headless=new")
 
-            return webdriver.Edge(
+            driver = webdriver.Edge(
                 service=EdgeService(
                     EdgeChromiumDriverManager().install()
                 ),
                 options=options
             )
+
+            DriverManager.set_driver(driver)
+
+            return DriverManager.get_driver()
 
         elif browser == "firefox":
 
@@ -50,11 +59,15 @@ class DriverFactory:
             if headless:
                 options.add_argument("-headless")
 
-            return webdriver.Firefox(
+            driver = webdriver.Firefox(
                 service=FirefoxService(
                     GeckoDriverManager().install()
                 ),
                 options=options
             )
+
+            DriverManager.set_driver(driver)
+
+            return DriverManager.get_driver()
 
         raise ValueError(f"Unsupported Browser : {browser}")

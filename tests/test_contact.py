@@ -20,13 +20,13 @@ class TestContact(BaseTest):
     contact_first_name = ""
     contact_email = ""
 
-    def login_and_navigate(self, driver):
-        login = LoginPage(driver)
-        contact_page = ContactPage(driver)
+    def login_and_navigate(self):
+        login = LoginPage()
+        contact_page = ContactPage()
         test_data = TestData()
-        wait_utils = WaitUtils(driver) # Initialize your wait utility
+        wait_utils = login.wait
 
-        current_url = driver.current_url
+        current_url = login.driver.current_url
         login.login(test_data.valid_username, test_data.valid_password)
         
         # Use your custom utility instead of a raw lambda!
@@ -42,7 +42,7 @@ class TestContact(BaseTest):
     @allure.description("Create a new contact")
     @allure.title("CONTACT_001 - Create Contact")
     @pytest.mark.smoke
-    def test_01_create_contact(self, driver):
+    def test_01_create_contact(self):
         self.logger.info("--- Starting Test 1: Create Contact ---")
         
         # Generate the unique data and save it to the Class variables
@@ -52,7 +52,7 @@ class TestContact(BaseTest):
         self.logger.info(f"Generated Data -> Name: {TestContact.contact_first_name} | Email: {TestContact.contact_email}")
 
         # Use our helper to get to the right page
-        contact_page = self.login_and_navigate(driver)
+        contact_page = self.login_and_navigate()
 
         # Execute creation
         contact_page.create_contact(TestContact.contact_first_name, TestContact.contact_email)
@@ -64,14 +64,14 @@ class TestContact(BaseTest):
     @allure.description("Search and verify the previously created contact")
     @allure.title("CONTACT_002 - Verify Contact")
     @pytest.mark.smoke
-    def test_02_verify_contact(self, driver):
+    def test_02_verify_contact(self):
         self.logger.info("--- Starting Test 2: Verify Contact ---")
         
         # Safety check: If Test 1 failed, we can't run this test.
         if not TestContact.contact_first_name:
             pytest.skip("Skipping: No contact was created in Test 1.")
 
-        contact_page = self.login_and_navigate(driver)
+        contact_page = self.login_and_navigate()
 
         # The verify_contact method handles the search and the extraction
         actual_name, actual_email = contact_page.verify_contact(
@@ -98,13 +98,13 @@ class TestContact(BaseTest):
     @allure.description("Delete the contact to clean up the database")
     @allure.title("CONTACT_004 - Delete Contact")
     @pytest.mark.smoke
-    def test_03_delete_contact(self, driver):
+    def test_03_delete_contact(self):
         self.logger.info("--- Starting Test 3: Delete Contact ---")
         
         if not TestContact.contact_first_name:
             pytest.skip("Skipping: No contact exists to delete.")
 
-        contact_page = self.login_and_navigate(driver)
+        contact_page = self.login_and_navigate()
 
         # 1. We must search for the specific contact first so we delete the right one
         contact_page.search_field(TestContact.contact_first_name)
@@ -121,7 +121,7 @@ class TestContact(BaseTest):
     @allure.description("Create a contact, edit its name, and verify the changes")
     @allure.title("CONTACT_004 - Edit Contact")
     @pytest.mark.smoke
-    def test_04_edit_contact(self, driver):
+    def test_04_edit_contact(self):
         self.logger.info("--- Starting Test 4: Edit Contact ---")
         
         fake = Faker()
@@ -129,7 +129,7 @@ class TestContact(BaseTest):
         contact_email = fake.email()
         updated_name = f"{initial_name}_Edited"
         
-        contact_page = self.login_and_navigate(driver)
+        contact_page = self.login_and_navigate()
         
         # 1. Create (Allow DB time to process because there is no success popup)
         self.logger.info(f"Creating initial contact: {initial_name}")
@@ -158,7 +158,7 @@ class TestContact(BaseTest):
     @allure.description("Search and verify a contact using their email address")
     @allure.title("CONTACT_005 - Search By Email")
     @pytest.mark.smoke
-    def test_05_search_by_email(self, driver):
+    def test_05_search_by_email(self):
         self.logger.info("--- Starting Test 5: Search By email ---")
 
         # 1. Generate local test data
@@ -166,7 +166,7 @@ class TestContact(BaseTest):
         contact_name = fake.first_name()
         contact_email = fake.email()
 
-        contact_page = self.login_and_navigate(driver)
+        contact_page = self.login_and_navigate()
 
         # 2. Create the contact
         self.logger.info(f"Creating contact -> Name: {contact_name} | Email: {contact_email}")
@@ -189,10 +189,10 @@ class TestContact(BaseTest):
     @allure.description("Verify the refresh button functionality reloads the grid")
     @allure.title("CONTACT_006 - Refresh functionality testing")
     @pytest.mark.smoke
-    def test_06_refresh_functionality(self, driver):
+    def test_06_refresh_functionality(self):
         self.logger.info("--- Starting Test 6: Refresh Functionality ---")
 
-        contact_page = self.login_and_navigate(driver)
+        contact_page = self.login_and_navigate()
 
         value = contact_page.refresh_page()
 
@@ -204,7 +204,7 @@ class TestContact(BaseTest):
     @allure.description("Create contact with blank First Name")
     @allure.title("CONTACT_007 - Create Contact with Blank First Name")
     @pytest.mark.smoke
-    def test_07_create_contact_with_blank_first_name(self, driver):
+    def test_07_create_contact_with_blank_first_name(self):
         self.logger.info("--- Starting Test 7: Create contact with blank First Name ---")
 
         fake = Faker()
@@ -213,7 +213,7 @@ class TestContact(BaseTest):
 
         self.logger.info(f"Test Data -> First Name: '{contact_name}', Email: {contact_email}")
 
-        contact_page = self.login_and_navigate(driver)
+        contact_page = self.login_and_navigate()
 
         self.logger.info("Attempting to create contact with blank First Name.")
 
@@ -234,7 +234,7 @@ class TestContact(BaseTest):
     @allure.description("Create contact with blank Email")
     @allure.title("CONTACT_008 - Create Contact with Blank Email")
     @pytest.mark.smoke
-    def test_08_create_contact_with_blank_email(self, driver):
+    def test_08_create_contact_with_blank_email(self):
         self.logger.info("--- Starting Test 8: Create contact with blank Email ---")
 
         fake = Faker()
@@ -243,7 +243,7 @@ class TestContact(BaseTest):
 
         self.logger.info(f"Test Data -> First Name: {contact_name}, Email: '{contact_email}'")
 
-        contact_page = self.login_and_navigate(driver)
+        contact_page = self.login_and_navigate()
 
         self.logger.info("Attempting to create contact with blank Email.")
 
@@ -263,7 +263,7 @@ class TestContact(BaseTest):
     @allure.description("Create contact with invalid Email")
     @allure.title("CONTACT_009 - Create Contact with Invalid Email")
     @pytest.mark.smoke
-    def test_09_create_contact_with_invalid_email(self, driver):
+    def test_09_create_contact_with_invalid_email(self):
         self.logger.info("--- Starting Test 9: Create contact with invalid Email ---")
 
         fake = Faker()
@@ -272,7 +272,7 @@ class TestContact(BaseTest):
 
         self.logger.info(f"Test Data -> First Name: {contact_name}, Email: {contact_email}")
 
-        contact_page = self.login_and_navigate(driver)
+        contact_page = self.login_and_navigate()
 
         self.logger.info("Attempting to create contact with an invalid Email.")
 
@@ -293,7 +293,7 @@ class TestContact(BaseTest):
     @allure.description("Create contact with duplicate Email")
     @allure.title("CONTACT_010 - Create Contact with Duplicate Email")
     @pytest.mark.smoke
-    def test_10_create_contact_with_duplicate_email(self, driver):
+    def test_10_create_contact_with_duplicate_email(self):
 
         self.logger.info("--- Starting Test 10: Create Contact with Duplicate Email ---")
 
@@ -305,7 +305,7 @@ class TestContact(BaseTest):
             f"Generated Test Data -> Name: {contact_name}, Email: {contact_email}"
         )
 
-        contact_page = self.login_and_navigate(driver)
+        contact_page = self.login_and_navigate()
 
         # Create contact
         self.logger.info("Creating contact for the first time.")
@@ -344,7 +344,7 @@ class TestContact(BaseTest):
     @allure.description("Search contact by partial name")
     @allure.title("CONTACT_011 - Search Contact by Partial Name")
     @pytest.mark.smoke
-    def test_11_search_contact_by_partial_name(self, driver):
+    def test_11_search_contact_by_partial_name(self):
 
         self.logger.info("--- Starting Test 11: Search Contact by Partial Name ---")
 
@@ -356,7 +356,7 @@ class TestContact(BaseTest):
             f"Generated Test Data -> Name: {contact_name}, Email: {contact_email}"
         )
 
-        contact_page = self.login_and_navigate(driver)
+        contact_page = self.login_and_navigate()
 
         # Create Contact
         self.logger.info("Creating contact.")
@@ -388,7 +388,7 @@ class TestContact(BaseTest):
     @allure.description("Verify contact count increases after creating a new contact")
     @allure.title("CONTACT_012 - Verify Contact Count After Creation")
     @pytest.mark.smoke
-    def test_12_count_contacts_after_creation(self, driver):
+    def test_12_count_contacts_after_creation(self):
 
         self.logger.info("--- Starting Test 12: Verify Contact Count After Creation ---")
 
@@ -400,7 +400,7 @@ class TestContact(BaseTest):
             f"Generated Test Data -> Name: {contact_name}, Email: {contact_email}"
         )
 
-        contact_page = self.login_and_navigate(driver)
+        contact_page = self.login_and_navigate()
 
         # Get count before creation
         before_count = contact_page.get_contact_count()
@@ -427,7 +427,7 @@ class TestContact(BaseTest):
     @allure.description("Verify contact count decrements after deleting a contact")
     @allure.title("CONTACT_013 - Verify Contact Count After Deletion")
     @pytest.mark.smoke
-    def test_13_count_contacts_after_deletion(self, driver):
+    def test_13_count_contacts_after_deletion(self):
 
         self.logger.info("--- Starting Test 13 ---")
 
@@ -435,7 +435,7 @@ class TestContact(BaseTest):
         contact_name = fake.first_name()
         contact_email = fake.email()
 
-        contact_page = self.login_and_navigate(driver)
+        contact_page = self.login_and_navigate()
 
         # Count before creation
         before_count = contact_page.get_contact_count()
