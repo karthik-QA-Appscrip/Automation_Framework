@@ -1,5 +1,4 @@
 import time
-from xml.dom.minidom import Element
 from selenium.webdriver.common.keys import Keys
 from pages.basePage import BasePage
 from utilities.waitHelper import WaitUtils

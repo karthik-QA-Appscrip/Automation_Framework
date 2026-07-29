@@ -54,9 +54,26 @@ class CompanyLocators:
         By.XPATH, "//button[normalize-space()='Refresh']"
     )
 
-    CONTACT_TABLE_ROWS = (
+    COMPANY_TABLE_ROWS = (
             By.XPATH, "//tbody[@class='[&_tr:last-child]:border-0']"
         )
-    
 
-    
+    SEARCH_FIELD = (
+        By.XPATH, "//input[@placeholder='Search companies...']"
+    )
+
+    GET_COMPANY_NAME = (
+        By.XPATH, "//div[@class='min-w-0 flex-1']//h2"
+    )
+
+    COMPANIES_COUNT = (
+        By.XPATH, "//p[normalize-space()='Companies']/ancestor::div[@data-slot='card-content']//p[contains(@class,'text-3xl')]"
+    )
+
+    DASHBOARD = (
+        By.XPATH , "//span[normalize-space()='Dashboard']"
+    )
+
+    REFRESH_BUTTON = (
+        By.XPATH, "//button[normalize-space()='Refresh']"
+    )

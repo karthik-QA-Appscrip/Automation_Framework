@@ -12,6 +12,7 @@ from utilities.BaseTest import BaseTest
 from utilities.TestDataManager import TestData
 from utilities.assertionHelper import AssertionHelper
 from utilities.waitHelper import WaitUtils
+from locators.companyLocators import CompanyLocators
 
 
 class TestCompany(BaseTest):
@@ -25,11 +26,15 @@ class TestCompany(BaseTest):
         test_data = TestData()
         wait_utils = login.wait
 
-        current_url = login.driver.current_url
-        login.login(test_data.valid_username, test_data.valid_password)
+        login.login(
+            test_data.valid_username,
+            test_data.valid_password
+        )
 
-        wait_utils.wait_for_url_to_change(current_url)
-        time.sleep(3)
+        # Wait until Workspace button appears after login
+        company_page.wait.wait_for_visibility(
+            CompanyLocators.WORK_SPACE
+        )
 
         company_page.click_work_space()
         company_page.click_company_tab()
@@ -171,4 +176,231 @@ class TestCompany(BaseTest):
         AssertionHelper.verify_true(value, "Verify company grid successfully refreshed")
         self.logger.info("Successfully verified refresh functionality.")
 
-    
+
+    @allure.description("Search and verify a company using their name")
+    @allure.title("COMPANY_007 - Search company by name")
+    @pytest.mark.smoke
+    def test_07_search_by_name(self):
+
+        self.logger.info("========== COMPANY_007 STARTED ==========")
+        self.logger.info("Test Objective : Search and verify a company using company name.")
+
+        company_page = self.login_and_navigate()
+
+        fake = Faker()
+
+        TestCompany.company_name = fake.company()
+        TestCompany.company_email = fake.email()
+
+        self.logger.info(f"Generated Company Name : {TestCompany.company_name}")
+        self.logger.info(f"Generated Company Email : {TestCompany.company_email}")
+
+        self.logger.info("Creating a new company.")
+
+        company_page.create_company(
+            TestCompany.company_name,
+            TestCompany.company_email
+        )
+
+        self.logger.info("Company created successfully.")
+
+        self.logger.info(
+            f"Searching and verifying company : {TestCompany.company_name}"
+        )
+
+        actual_result = company_page.verify_company_details(
+            TestCompany.company_name
+        )
+
+        expected_result = TestCompany.company_name
+
+        self.logger.info(f"Expected Company Name : {expected_result}")
+        self.logger.info(f"Actual Company Name   : {actual_result}")
+
+        AssertionHelper.verify_equal(
+            expected_result,
+            actual_result,
+            "Verify created company is displayed correctly."
+        )
+
+        self.logger.info("Company verification completed successfully.")
+        self.logger.info("========== COMPANY_007 PASSED ==========")
+
+
+    @allure.description("Verify company count increases after creating a new company")
+    @allure.title("COMPANY_008 - Verify Company Count After Creation")
+    @pytest.mark.smoke
+    def test_08_count_company_after_creation(self):
+
+        self.logger.info("========== COMPANY_008 STARTED ==========")
+
+        fake = Faker()
+
+        company_name = fake.company()
+        company_email = fake.email()
+
+        company_page = self.login_and_navigate()
+
+        # Count before creation
+        before_count = company_page.get_company_count()
+
+        self.logger.info(f"Company Count Before Creation : {before_count}")
+
+        # Create company
+        company_page.create_company(
+            company_name,
+            company_email
+        )
+
+        self.logger.info("Company created successfully.")
+
+        # Verify company
+        actual_name = company_page.verify_company_details(company_name)
+
+        AssertionHelper.verify_equal(
+            company_name,
+            actual_name,
+            "Verify company created successfully."
+        )
+
+        # Count after creation
+        after_count = company_page.get_company_count()
+
+        self.logger.info(f"Company Count After Creation : {after_count}")
+
+        AssertionHelper.verify_equal(
+            before_count + 1,
+            after_count,
+            "Verify company count incremented."
+        )
+
+        self.logger.info("Company count increment verified.")
+        self.logger.info("========== COMPANY_008 PASSED ==========")
+
+
+    @allure.description("Verify company count decrements after deleting a company")
+    @allure.title("COMPANY_009 - Verify Company Count After Deletion")
+    @pytest.mark.smoke
+    def test_09_count_company_after_deletion(self):
+
+        self.logger.info("========== COMPANY_009 STARTED ==========")
+
+        fake = Faker()
+
+        company_name = fake.company()
+        company_email = fake.email()
+
+        company_page = self.login_and_navigate()
+
+        # Count before creation
+        before_count = company_page.get_company_count()
+
+        self.logger.info(f"Company Count Before Creation : {before_count}")
+
+        # Create company
+        company_page.create_company(
+            company_name,
+            company_email
+        )
+
+        self.logger.info("Company created successfully.")
+
+        # Verify company
+        actual_name = company_page.verify_company_details(company_name)
+
+        AssertionHelper.verify_equal(
+            company_name,
+            actual_name,
+            "Verify company created successfully."
+        )
+
+        # Count after creation
+        count_after_creation = company_page.get_company_count()
+
+        self.logger.info(
+            f"Company Count After Creation : {count_after_creation}"
+        )
+
+        AssertionHelper.verify_equal(
+            before_count + 1,
+            count_after_creation
+        )
+
+        # Delete company
+        self.logger.info(f"Deleting Company : {company_name}")
+
+        company_page.delete_company(company_name)
+
+        popup = company_page.get_popup_text()
+
+        AssertionHelper.verify_contains(
+            "Company deleted",
+            popup
+        )
+
+        company_page.wait_for_popup_to_clear()
+
+        self.logger.info("Company deleted successfully.")
+
+        # Count after deletion
+        after_count = company_page.get_company_count()
+
+        self.logger.info(
+            f"Company Count After Deletion : {after_count}"
+        )
+
+        AssertionHelper.verify_equal(
+            count_after_creation - 1,
+            after_count,
+            "Verify company count decremented."
+        )
+
+        self.logger.info("Company count decrement verified.")
+        self.logger.info("========== COMPANY_009 PASSED ==========")
+
+
+    @allure.description("Verify company's email field is blocked/read-only")
+    @allure.title("COMPANY_010 - Verify company's email field is blocked/read-only")
+    @pytest.mark.smoke
+    def test_10_verify_company_email_readonly(self):
+
+        self.logger.info("========== COMPANY_010 STARTED ==========")
+
+        fake = Faker()
+
+        company_name = fake.company()
+        company_email = fake.email()
+
+        company_page = self.login_and_navigate()
+
+        self.logger.info(
+            f"Generated Company -> Name: {company_name}, Email: {company_email}"
+        )
+
+        # Create Company
+        company_page.create_company(
+            company_name,
+            company_email
+        )
+
+        self.logger.info("Company created successfully.")
+
+        # Open Edit Company
+        company_page.click_edit_company(company_name)
+
+        self.logger.info("Edit Company page opened.")
+
+        # Verify Email field is not editable
+        editable = company_page.is_field_editable(
+            CompanyLocators.EMAIL_ID
+        )
+
+        self.logger.info(f"Email Field Editable: {editable}")
+
+        AssertionHelper.verify_false(
+            editable,
+            "Verify company email field is blocked/read-only."
+        )
+
+        self.logger.info("Verified company email field is read-only.")
+        self.logger.info("========== COMPANY_010 PASSED ==========")

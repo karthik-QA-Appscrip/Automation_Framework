@@ -68,3 +68,12 @@ class BasePage:
 
         def get_url(self):
             return self.driver.current_url
+
+        def is_field_editable(self, locator):
+            element = self.find_element(locator)
+
+            return (
+                element.is_enabled()
+                and element.get_attribute("readonly") is None
+                and element.get_attribute("disabled") is None
+            )

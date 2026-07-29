@@ -1,5 +1,4 @@
 import time
-from tkinter import S
 from pages.basePage import BasePage
 from utilities.waitHelper import WaitUtils
 from locators.companyLocators import CompanyLocators
@@ -127,10 +126,55 @@ class CompanyPage(BasePage):
                     raise
         
         self.wait.wait_for_visibility(
-            CompanyLocators.CONTACT_TABLE_ROWS
+            CompanyLocators.COMPANY_TABLE_ROWS
         )
         
         return True
 
+    def search_company(self, company_name):
+        self.wait.wait_for_visibility(CompanyLocators.SEARCH_FIELD)
+        self.clear(CompanyLocators.SEARCH_FIELD)
+
+        self.enter_text(
+            CompanyLocators.SEARCH_FIELD,
+            company_name
+        )
+
+        self.find_element(
+            CompanyLocators.SEARCH_FIELD
+        )
+
+    def verify_company_details(self, company_name):
+
+        self.search_company(company_name)
+
+        self.click_view_company(company_name)
+
+        return self.get_text(
+            CompanyLocators.GET_COMPANY_NAME
+        )
+
+    def get_company_count(self):
+        self.click(CompanyLocators.DASHBOARD)
+        self.click(CompanyLocators.REFRESH_BUTTON)
+        time.sleep(2)
+        self.wait.wait_for_visibility(CompanyLocators.COMPANIES_COUNT)
     
+        count = self.get_text(CompanyLocators.COMPANIES_COUNT)
     
+        self.click(CompanyLocators.COMPANIES_COUNT)
+    
+        return int(count)
+
+    def wait_for_popup_to_clear(self):
+        """Dynamically waits for the success toast to appear, then fade away."""
+        self.wait.wait_for_visibility(CompanyLocators.POP_UP)
+        self.wait.wait_for_invisibility(CompanyLocators.POP_UP)
+
+    
+    def is_company_email_editable(self):
+        element = self.find_element(
+            CompanyLocators.EMAIL_ID
+        )
+
+        return element.is_enabled()
