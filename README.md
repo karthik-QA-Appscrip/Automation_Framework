@@ -2,35 +2,53 @@
 
 ## Overview
 
-This automation framework is developed using Python, Selenium WebDriver, and Pytest. It follows the Page Object Model (POM) design pattern to provide a scalable, reusable, and maintainable test automation solution.
+A scalable, maintainable, and reusable Selenium Automation Framework built using **Python**, **Selenium WebDriver**, and **Pytest** following the **Page Object Model (POM)** design pattern.
 
-The framework supports cross-browser execution, headless mode, data-driven testing, reporting, logging, and automatic retry of failed test cases.
+The framework is designed for enterprise-level web automation and supports cross-browser execution, parallel execution, configurable environments, reporting, logging, screenshot capture, Jenkins CI/CD integration, and reusable utility components.
 
 ---
 
-## Features
+# Tech Stack
 
+- Python
 - Selenium WebDriver
 - Pytest
-- Page Object Model (POM)
-- Driver Factory
-- Base Page Architecture
-- Base Test Class
-- Cross Browser Execution
-- Headless Execution
+- Allure Report
+- Pytest HTML Report
 - WebDriverManager
-- Allure Reporting
-- Pytest HTML Reporting
-- Screenshot Capture on Failure
-- Automatic Retry
-- JSON Test Data
-- Excel Test Data
-- Logging
-- Configurable Environment
+- Faker
+- OpenPyXL
+- Jenkins
+- Git & GitHub
 
 ---
 
-## Project Structure
+# Framework Features
+
+- Page Object Model (POM)
+- Driver Factory Pattern
+- Thread Local Driver Manager
+- Base Page Architecture
+- Base Test Class
+- Explicit Wait Utility
+- Assertion Helper
+- Config Reader
+- JSON Test Data
+- Excel Test Data
+- Faker Test Data Generation
+- Cross Browser Execution
+- Headless Execution
+- Screenshot Capture on Failure
+- Logging
+- Automatic Retry of Failed Tests
+- Allure Reporting
+- Pytest HTML Reporting
+- Jenkins CI/CD Pipeline
+- GitHub Integration
+
+---
+
+# Project Structure
 
 ```text
 Automation_Framework/
@@ -55,24 +73,77 @@ Automation_Framework/
 
 ---
 
-## Prerequisites
+# Framework Components
 
-- Python 3.x
-- Google Chrome / Microsoft Edge / Mozilla Firefox
-- Allure Command Line
-- Git
+## Pages
+
+Contains Page Object classes that encapsulate page actions.
+
+## Locators
+
+Stores all page locators separately from test logic.
+
+## Utilities
+
+Contains reusable framework components:
+
+- DriverFactory
+- DriverManager (Thread Local)
+- BasePage
+- BaseTest
+- WaitHelper
+- AssertionHelper
+- ConfigReader
+- Logger
+- Screenshot Utility
+- TestDataManager
+
+## Fixtures
+
+Contains browser initialization and teardown fixtures.
+
+## Test Data
+
+Supports
+
+- JSON
+- Excel
+- Faker Generated Data
 
 ---
 
-## Installation
+# Browser Support
 
-Clone the repository:
+- Google Chrome
+- Microsoft Edge
+- Mozilla Firefox
+
+---
+
+# Prerequisites
+
+- Python 3.x
+- Chrome / Edge / Firefox
+- Git
+- Allure Command Line
+
+---
+
+# Installation
+
+Clone the repository
 
 ```bash
 git clone <repository_url>
 ```
 
-Install dependencies:
+Navigate to the project
+
+```bash
+cd Automation_Framework
+```
+
+Install dependencies
 
 ```bash
 pip install -r requirements.txt
@@ -80,111 +151,141 @@ pip install -r requirements.txt
 
 ---
 
-## Test Execution
+# Test Execution
 
-Run all tests:
+Run all tests
 
 ```bash
 pytest
 ```
 
-Run in headless mode:
+Run Smoke Tests
+
+```bash
+pytest -m smoke
+```
+
+Run in Headless Mode
 
 ```bash
 pytest --headless
 ```
 
-Run on Chrome:
+Run on Chrome
 
 ```bash
 pytest --browser chrome
 ```
 
-Run on Edge:
+Run on Edge
 
 ```bash
 pytest --browser edge
 ```
 
-Run on Firefox:
+Run on Firefox
 
 ```bash
 pytest --browser firefox
 ```
 
+Run Tests in Parallel
+
+```bash
+pytest -n 4
+```
+
 ---
 
-## Reporting
+# Reporting
 
-Generate Allure results:
+Generate Allure Results
 
 ```bash
 pytest --alluredir=allure-results
 ```
 
-Open Allure Report:
+Open Allure Report
 
 ```bash
 allure serve allure-results
 ```
 
----
+Generate HTML Report
 
-## Framework Components
-
-### Pages
-Contains Page Object classes.
-
-### Locators
-Contains all page locators.
-
-### Utilities
-Contains reusable framework utilities such as:
-
-- DriverFactory
-- ConfigReader
-- Logger
-- Screenshot
-- WaitHelper
-- AssertionHelper
-- TestDataManager
-
-### Fixtures
-
-Contains browser and reporting fixtures.
-
-### Test Data
-
-Supports both JSON and Excel based test data.
+```bash
+pytest --html=reports/report.html
+```
 
 ---
 
-## Logging
+# Logging
 
-Execution logs are generated automatically under the `logs/` directory.
+Execution logs are automatically generated inside
 
----
+```
+logs/
+```
 
-## Screenshots
-
-Failure screenshots are automatically captured and attached to the Allure report.
-
----
-
-## Browser Support
-
-- Chrome
-- Edge
-- Firefox
+Each execution creates a timestamped log file.
 
 ---
 
-## Configuration
+# Screenshots
 
-Framework configuration is managed through the configuration files located in the `config/` directory.
+On test failure, screenshots are automatically
+
+- Captured
+- Saved inside `screenshots/`
+- Attached to the Allure Report
+
+---
+
+# Configuration
+
+Framework configuration is maintained inside the `config/` directory.
+
+Configurable properties include:
+
+- Application URL
+- Browser
+- Timeout
+- Environment
 
 Supported environments:
 
 - Development
 - QA
 - UAT
+
+---
+
+# CI/CD
+
+The framework supports automated execution using **Jenkins Pipeline**.
+
+Pipeline includes:
+
+- Source Code Checkout
+- Dependency Installation
+- Test Execution
+- Allure Report Generation
+- HTML Report Generation
+
+---
+
+# Design Pattern
+
+This framework follows:
+
+- Page Object Model (POM)
+- Factory Design Pattern
+- Thread Local Driver Management
+
+---
+
+# Author
+
+**Karthik S**
+
+Automation Test Engineer
