@@ -404,3 +404,160 @@ class TestCompany(BaseTest):
 
         self.logger.info("Verified company email field is read-only.")
         self.logger.info("========== COMPANY_010 PASSED ==========")
+
+
+    @allure.description("Verify audit logs are generated after creating a company")
+    @allure.title("COMPANY_014 - Verify Audit Logs for Company Creation")
+    @pytest.mark.smoke
+    def test_14_verify_audit_logs_for_create(self):
+
+        self.logger.info("========== COMPANY_014 STARTED ==========")
+        self.logger.info("Test Objective: Verify audit logs after creating a company.")
+
+        fake = Faker()
+
+        company_name = fake.company()
+        company_email = fake.email()
+
+        self.logger.info(f"Generated Company Name : {company_name}")
+        self.logger.info(f"Generated Company Email: {company_email}")
+
+        company_page = self.login_and_navigate()
+
+        self.logger.info("Creating a new company.")
+
+        company_page.create_company(
+            company_name,
+            company_email
+        )
+
+        self.logger.info("Company created successfully.")
+
+        self.logger.info("Navigating to Administration -> Audit Logs.")
+
+        action, category = company_page.verify_audit_logs("CREATE")
+
+        actual_result = f"{action},{category}"
+        expected_result = "CREATE,COMPANY"
+
+        self.logger.info(f"Expected Audit Log : {expected_result}")
+        self.logger.info(f"Actual Audit Log   : {actual_result}")
+
+        AssertionHelper.verify_contains(
+            expected_result,
+            actual_result,
+            "Verify audit log entry for company creation."
+        )
+
+        self.logger.info("Audit log verification completed successfully.")
+        self.logger.info("========== COMPANY_014 PASSED ==========")
+
+
+    @allure.description("Verify audit logs are generated after deleting a company")
+    @allure.title("COMPANY_015 - Verify Audit Logs for Company Deletion")
+    @pytest.mark.smoke
+    def test_15_verify_audit_logs_for_delete(self):
+
+        self.logger.info("========== COMPANY_015 STARTED ==========")
+        self.logger.info("Test Objective: Verify audit logs after deleting a company.")
+
+        fake = Faker()
+
+        company_name = fake.company()
+        company_email = fake.email()
+
+        self.logger.info(f"Generated Company Name : {company_name}")
+        self.logger.info(f"Generated Company Email: {company_email}")
+
+        company_page = self.login_and_navigate()
+
+        self.logger.info("Creating a new company.")
+
+        company_page.create_company(
+            company_name,
+            company_email
+        )
+
+        self.logger.info("Company created successfully.")
+
+        self.logger.info("Searching and deleting the created company.")
+
+        company_page.search_company(company_name)
+        company_page.delete_company(company_name)
+        company_page.wait_for_popup_to_clear()
+
+        self.logger.info("Company deleted successfully.")
+
+        self.logger.info("Navigating to Administration -> Audit Logs.")
+
+        action, category = company_page.verify_audit_logs("DELETE")
+
+        actual_result = f"{action},{category}"
+        expected_result = "DELETE,COMPANY"
+
+        self.logger.info(f"Expected Audit Log : {expected_result}")
+        self.logger.info(f"Actual Audit Log   : {actual_result}")
+
+        AssertionHelper.verify_contains(
+            expected_result,
+            actual_result,
+            "Verify audit log entry for company deletion."
+        )
+
+        self.logger.info("Audit log verification completed successfully.")
+        self.logger.info("========== COMPANY_015 PASSED ==========")
+
+    @allure.description("Verify audit logs are generated after editing a company")
+    @allure.title("COMPANY_016 - Verify Audit Logs for Company Edit")
+    @pytest.mark.smoke
+    def test_16_verify_audit_logs_for_edit(self):
+
+        self.logger.info("========== COMPANY_016 STARTED ==========")
+        self.logger.info("Test Objective: Verify audit logs after editing a company.")
+
+        fake = Faker()
+
+        company_name = fake.company()
+        updated_company_name = fake.company()
+        company_email = fake.email()
+
+        self.logger.info(f"Original Company Name : {company_name}")
+        self.logger.info(f"Updated Company Name  : {updated_company_name}")
+        self.logger.info(f"Company Email         : {company_email}")
+
+        company_page = self.login_and_navigate()
+
+        self.logger.info("Creating a new company.")
+
+        company_page.create_company(
+            company_name,
+            company_email
+        )
+
+        self.logger.info("Company created successfully.")
+
+        self.logger.info("Editing the created company.")
+
+        company_page.search_company(company_name)
+        company_page.edit_company(company_name,updated_company_name)
+
+        self.logger.info("Company edited successfully.")
+
+        self.logger.info("Navigating to Administration -> Audit Logs.")
+
+        action, category = company_page.verify_audit_logs("UPDATE")
+
+        actual_result = f"{action},{category}"
+        expected_result = "UPDATE,COMPANY"
+
+        self.logger.info(f"Expected Audit Log : {expected_result}")
+        self.logger.info(f"Actual Audit Log   : {actual_result}")
+
+        AssertionHelper.verify_contains(
+            expected_result,
+            actual_result,
+            "Verify audit log entry for company update."
+        )
+
+        self.logger.info("Audit log verification completed successfully.")
+        self.logger.info("========== COMPANY_016 PASSED ==========")

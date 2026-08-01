@@ -178,3 +178,40 @@ class CompanyPage(BasePage):
         )
 
         return element.is_enabled()
+
+    def click_administration(self):
+            self.wait.wait_for_visibility(CompanyLocators.ADMINISTRATION)
+            self.click(CompanyLocators.ADMINISTRATION)
+    
+    def click_audit_logs(self):
+        self.wait.wait_for_visibility(CompanyLocators.AUDIT_LOGS)
+        self.click(CompanyLocators.AUDIT_LOGS)
+
+    def get_audit_logs(self):
+            self.wait.wait_for_visibility(CompanyLocators.AUDIT_LOGS_ACTION)
+            self.wait.wait_for_visibility(CompanyLocators.AUDIT_LOGS_CATEGORY)
+    
+            action = self.get_text(CompanyLocators.AUDIT_LOGS_ACTION)
+            category = self.get_text(CompanyLocators.AUDIT_LOGS_CATEGORY)
+    
+            return action,category
+    
+    def verify_audit_logs(self, expected_action):
+    
+            self.click_administration()
+            self.click_audit_logs()
+    
+            locator = (
+                By.XPATH,
+                f"//tbody/tr[1]/td[3]//span[normalize-space()='{expected_action}']"
+            )
+    
+            self.wait.wait_for_visibility(locator)
+    
+            action = self.get_text(locator)
+            category = self.get_text(
+                (By.XPATH, "//tbody/tr[1]/td[4]//span")
+            )
+    
+            return action, category
+    

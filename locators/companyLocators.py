@@ -77,3 +77,20 @@ class CompanyLocators:
     REFRESH_BUTTON = (
         By.XPATH, "//button[normalize-space()='Refresh']"
     )
+
+    AUDIT_LOGS_ACTION = (
+        By.XPATH, "//tbody/tr[1]/td[3]//span"
+    )
+
+    AUDIT_LOGS_CATEGORY = (
+        By.XPATH, "//tbody/tr[1]/td[4]//span"
+    )
+
+    ADMINISTRATION = (
+            By.XPATH, "//button[@aria-label='Toggle Administration menu']"
+        )
+    
+    AUDIT_LOGS = (
+            By.XPATH, "//li//span[.='Audit Logs']"
+        )
+

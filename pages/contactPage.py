@@ -5,6 +5,8 @@ from utilities.waitHelper import WaitUtils
 from locators.contactsLocators import ContactsLocators
 from selenium.common.exceptions import StaleElementReferenceException
 from utilities.driver_manager import DriverManager
+from selenium.webdriver.common.by import By
+
 
 
 class ContactPage(BasePage):
@@ -85,6 +87,7 @@ class ContactPage(BasePage):
         self.clear(ContactsLocators.FIRST_NAME)
         self.enter_text(ContactsLocators.FIRST_NAME, edit_name) # BasePage handles clearing
         self.click_save_button()
+        self.refresh_page()
        
 
     def verify_contact(self, value):
@@ -186,3 +189,31 @@ class ContactPage(BasePage):
         self.click(ContactsLocators.CONTACT_COUNT)
 
         return int(count)
+
+    def get_audit_logs(self):
+        self.wait.wait_for_visibility(ContactsLocators.AUDIT_LOGS_ACTION)
+        self.wait.wait_for_visibility(ContactsLocators.AUDIT_LOGS_CATEGORY)
+
+        action = self.get_text(ContactsLocators.AUDIT_LOGS_ACTION)
+        category = self.get_text(ContactsLocators.AUDIT_LOGS_CATEGORY)
+
+        return action,category
+
+    def verify_audit_logs(self, expected_action):
+
+        self.click_administration()
+        self.click_audit_logs()
+
+        locator = (
+            By.XPATH,
+            f"//tbody/tr[1]/td[3]//span[normalize-space()='{expected_action}']"
+        )
+
+        self.wait.wait_for_visibility(locator)
+
+        action = self.get_text(locator)
+        category = self.get_text(
+            (By.XPATH, "//tbody/tr[1]/td[4]//span")
+        )
+
+        return action, category

@@ -1,5 +1,3 @@
-from re import A, X
-
 from selenium.webdriver.common.by import By
 
 class ContactsLocators:
@@ -96,3 +94,12 @@ class ContactsLocators:
     DASHBOARD = (
         By.XPATH , "//span[normalize-space()='Dashboard']"
     )
+
+    AUDIT_LOGS_ACTION = (
+            By.XPATH, "//tbody/tr[1]/td[3]//span"
+        )
+    
+    AUDIT_LOGS_CATEGORY = (
+            By.XPATH, "//tbody/tr[1]/td[4]//span"
+        )
+    

@@ -473,3 +473,161 @@ class TestContact(BaseTest):
         AssertionHelper.verify_equal(count_after_creation - 1, after_count)
 
         self.logger.info("Contact count decremented successfully.")
+
+
+    @allure.description("Verify audit logs are generated after creating a contact")
+    @allure.title("CONTACT_014 - Verify Audit Logs for Contact Creation")
+    @pytest.mark.smoke
+    def test_14_verify_audit_logs_for_create(self):
+
+        self.logger.info("========== CONTACT_014 STARTED ==========")
+        self.logger.info("Test Objective: Verify audit logs after creating a contact.")
+
+        fake = Faker()
+
+        contact_name = fake.first_name()
+        contact_email = fake.email()
+
+        self.logger.info(f"Generated Contact Name : {contact_name}")
+        self.logger.info(f"Generated Contact Email: {contact_email}")
+
+        contact_page = self.login_and_navigate()
+
+        self.logger.info("Creating a new contact.")
+
+        contact_page.create_contact(
+            contact_name,
+            contact_email
+        )
+
+        self.logger.info("Contact created successfully.")
+
+        self.logger.info("Navigating to Administration -> Audit Logs.")
+
+        action, category = contact_page.verify_audit_logs("CREATE")
+
+        actual_result = f"{action},{category}"
+        expected_result = "CREATE,CONTACT"
+
+        self.logger.info(f"Expected Audit Log : {expected_result}")
+        self.logger.info(f"Actual Audit Log   : {actual_result}")
+
+        AssertionHelper.verify_contains(
+            expected_result,
+            actual_result,
+            "Verify audit log entry for contact creation."
+        )
+
+        self.logger.info("Audit log verification completed successfully.")
+        self.logger.info("========== CONTACT_014 PASSED ==========")
+
+
+    @allure.description("Verify audit logs are generated after deleting a contact")
+    @allure.title("CONTACT_015 - Verify Audit Logs for Contact Deletion")
+    @pytest.mark.smoke
+    def test_15_verify_audit_logs_for_delete(self):
+
+        self.logger.info("========== CONTACT_015 STARTED ==========")
+        self.logger.info("Test Objective: Verify audit logs after deleting a contact.")
+
+        fake = Faker()
+
+        contact_name = fake.first_name()
+        contact_email = fake.email()
+
+        self.logger.info(f"Generated Contact Name : {contact_name}")
+        self.logger.info(f"Generated Contact Email: {contact_email}")
+
+        contact_page = self.login_and_navigate()
+
+        self.logger.info("Creating a new contact.")
+
+        contact_page.create_contact(
+            contact_name,
+            contact_email
+        )
+
+        self.logger.info("Contact created successfully.")
+
+        self.logger.info("Searching and deleting the created contact.")
+
+        contact_page.search_field(contact_name)
+        contact_page.delete_contact_in_search_field()
+        contact_page.wait_for_popup_to_clear()
+
+        self.logger.info("Contact deleted successfully.")
+
+        self.logger.info("Navigating to Administration -> Audit Logs.")
+
+        action, category = contact_page.verify_audit_logs("DELETE")
+
+        actual_result = f"{action},{category}"
+        expected_result = "DELETE,CONTACT"
+
+        self.logger.info(f"Expected Audit Log : {expected_result}")
+        self.logger.info(f"Actual Audit Log   : {actual_result}")
+
+        AssertionHelper.verify_contains(
+            expected_result,
+            actual_result,
+            "Verify audit log entry for contact deletion."
+        )
+
+        self.logger.info("Audit log verification completed successfully.")
+        self.logger.info("========== CONTACT_015 PASSED ==========")
+
+
+    @allure.description("Verify audit logs are generated after editing a contact")
+    @allure.title("CONTACT_016 - Verify Audit Logs for Contact Edit")
+    @pytest.mark.smoke
+    def test_16_verify_audit_logs_for_edit(self):
+
+        self.logger.info("========== CONTACT_016 STARTED ==========")
+        self.logger.info("Test Objective: Verify audit logs after editing a contact.")
+
+        fake = Faker()
+
+        contact_name = fake.first_name()
+        updated_contact_name = fake.first_name()
+        contact_email = fake.email()
+
+        self.logger.info(f"Original Contact Name : {contact_name}")
+        self.logger.info(f"Updated Contact Name  : {updated_contact_name}")
+        self.logger.info(f"Contact Email         : {contact_email}")
+
+        contact_page = self.login_and_navigate()
+
+        self.logger.info("Creating a new contact.")
+
+        contact_page.create_contact(
+            contact_name,
+            contact_email
+        )
+
+        self.logger.info("Contact created successfully.")
+
+        self.logger.info("Editing the created contact.")
+
+        contact_page.search_field(contact_name)
+        contact_page.edit_contact(updated_contact_name)
+
+        self.logger.info("Contact edited successfully.")
+
+        self.logger.info("Navigating to Administration -> Audit Logs.")
+
+        action, category = contact_page.verify_audit_logs("UPDATE")
+
+        actual_result = f"{action},{category}"
+        expected_result = "UPDATE,CONTACT"
+
+        self.logger.info(f"Expected Audit Log : {expected_result}")
+        self.logger.info(f"Actual Audit Log   : {actual_result}")
+
+        AssertionHelper.verify_contains(
+            expected_result,
+            actual_result,
+            "Verify audit log entry for contact update."
+        )
+
+        self.logger.info("Audit log verification completed successfully.")
+        self.logger.info("========== CONTACT_016 PASSED ==========")

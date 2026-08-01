@@ -32,9 +32,6 @@ def pytest_addoption(parser):
 @pytest.fixture(scope="function", autouse=True)
 def driver(request):
 
-    print("Fixture Started")
-
-
     config = ConfigReader()
 
     browser = request.config.getoption("--browser")
