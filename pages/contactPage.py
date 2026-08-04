@@ -212,6 +212,8 @@ class ContactPage(BasePage):
         self.wait.wait_for_visibility(locator)
 
         action = self.get_text(locator)
+        self.wait.wait_for_visibility((By.XPATH, "//tbody/tr[1]/td[4]//span")
+        )
         category = self.get_text(
             (By.XPATH, "//tbody/tr[1]/td[4]//span")
         )
